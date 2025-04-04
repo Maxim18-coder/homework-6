@@ -4,7 +4,10 @@ from rest_framework.viewsets import ModelViewSet
 
 class AdvertisementViewSet(ModelViewSet):
     """ViewSet для объявлений."""
-
+    queryset = Advertisement.objects.all()
+    serializer_class = AdvertisementSerializer
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = AdvertisementFilter
     # TODO: настройте ViewSet, укажите атрибуты для кверисета,
     #   сериализаторов и фильтров
 

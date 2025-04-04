@@ -20,6 +20,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 # TODO: подключите `AdvertisementViewSet`
+router.register(r'announcements', AnnouncementViewSet, basename='announcement')
 
 
 urlpatterns = [
