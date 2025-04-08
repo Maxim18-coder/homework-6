@@ -28,3 +28,33 @@ class Advertisement(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True
     )
+
+class UserThrottle(UserRateThrottle):
+    rate = '20/min'
+
+
+class AnonThrottle(AnonRateThrottle):
+    rate = '10/min'
+
+
+class AdvertisementViewSet(viewsets.ModelViewSet):
+    queryset = Advertisement.objects.all()
+
+    def perform_update(self, serializer):
+        advertisement = self.get_object()
+
+        if advertisement.status == AdvertisementStatusChoices.CLOSED and serializer.validated_data.get(
+                'status') == AdvertisementStatusChoices.OPEN:
+
+            pass
+
+        if advertisement.creator != self.request.user:
+            raise PermissionDenied("У вас нет прав для изменения этого объявления.")
+
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        if instance.creator != self.request.user:
+            raise PermissionDenied("У вас нет прав для удаления этого объявления.")
+
+        instance.delete()
